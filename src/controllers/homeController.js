@@ -1,7 +1,18 @@
+const db = require('../models/index'); 
 
 class homeController  {
-    show(req, res) {
-       res.render('homePage');
+   async show(req, res) {
+
+       try {
+        let data = await db.User.findAll();
+        console.log(data);
+        res.render('homePage', {
+            data: JSON.stringify(data)
+        });
+        
+       } catch (error) {
+        console.log(error);
+       }
     }
 };
 
