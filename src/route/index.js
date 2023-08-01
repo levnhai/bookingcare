@@ -1,6 +1,6 @@
-const webRouter = require('./web');
+const homeRouter = require('./home');
 function routes(app) {
-    app.use('/', webRouter)
+    app.use('/', homeRouter)
 };
 
 module.exports = routes;
