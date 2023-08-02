@@ -46,6 +46,15 @@ class crudController  {
         await CRUDservice.updateUserInfoById(data);
         res.redirect('/crud');
     }
-    };
+
+    async delete(req, res) {
+
+        let userId = req.params.id;
+        await CRUDservice.deleteUserInfoById(userId);
+        res.redirect('/crud');
+    }
+    
+};
+
 
 module.exports = new crudController();      

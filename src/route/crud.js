@@ -8,5 +8,6 @@ router.get('/create', crudController.create);
 router.post('/store', crudController.store);
 router.get('/:id/edit', crudController.getUserById);
 router.post('/update', crudController.update);
+router.get('/:id/delete', crudController.delete);
 
 module.exports = router;
