@@ -17,8 +17,8 @@ let createNewUser = (data) => {
                 roleId: data.roleId,
                 phoneNumber: data.phoneNumber,
                 positionId: data.positionId,
-           })
-           resolve('add data user success')
+           });
+           resolve('add data user success');
         } catch (error) {
             reject(error);
         }
@@ -28,13 +28,65 @@ let createNewUser = (data) => {
 let hastPassword = (password) => {
     return new Promise( async (resolve, reject) => {
         try {
-            var hashPassword = await bcrypt.hashSync("B4c0/\/", salt);
-            resolve(hashPassword)
+            let hashPassword = await bcrypt.hashSync("B4c0/\/", salt);
+            resolve(hashPassword);
         } catch (error) {
-            reject(error)
+            reject(error);
         }
     })
 }
+
+let getAllUsers = () => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            let getAllUsers = await db.User.findAll({
+                raw: true,
+            });
+            resolve(getAllUsers);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+let getUserInfoById = (userID) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: {id: userID},
+                raw: true,
+            });
+            resolve(user);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+let updateUserInfoById = (data) => {
+    return new Promise( async (resolve, reject) => {
+      try {
+         await db.User.update({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            address: data.address
+            }, {
+            where: {
+                id: data.id
+            }
+        })
+        resolve();
+      } catch (error) {
+        console.log('looxix');
+      }
+    })
+}
+    
 module.exports = ({
-    createNewUser
+    createNewUser,
+    getAllUsers,
+    getUserInfoById,
+    updateUserInfoById
 })
