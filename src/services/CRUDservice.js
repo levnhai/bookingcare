@@ -4,9 +4,13 @@ const salt = bcrypt.genSaltSync(10);
 const db = require('../models')
 
 let createNewUser = (data) => {
-    return new Promise( async (resolve, reject) => {
+    console.log(data)
+    console.log(data.password)
+    return new Promise(async(resolve, reject) => {
         try {
             let hashPassword = await hastPassword(data.password);
+
+            console.log(hashPassword)
             await db.User.create({
                 email: data.email,
                 password: hashPassword,
@@ -26,9 +30,9 @@ let createNewUser = (data) => {
 }
 
 let hastPassword = (password) => {
-    return new Promise( async (resolve, reject) => {
+    return new Promise( async(resolve, reject) => {
         try {
-            let hashPassword = await bcrypt.hashSync("B4c0/\/", salt);
+            let hashPassword = await bcrypt.hashSync(password, salt);
             resolve(hashPassword);
         } catch (error) {
             reject(error);
