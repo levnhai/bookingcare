@@ -8,9 +8,8 @@ class userController  {
 
         let email = req.body.email;
         let password = req.body.password;
-
         if (!email || !password) {
-            res.status(500).json({
+            return res.status(500).json({
                 errCode: 1,
                 message: 'bạn ch nhập email hoặc password'
             })
@@ -18,14 +17,13 @@ class userController  {
 
         let userData = await userService.handleUserLogin(email, password);
 
-        res.status(200).json({
+        return res.status(200).json({
             errcode: userData.errCode,
             message: userData.errMessage,
-            user : userData.user ? userData.user: {}
+            user: userData.user ? userData.user : {}
             
         })
      }
-
 };
 
 

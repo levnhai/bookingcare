@@ -14,7 +14,7 @@ let handleUserLogin = (email, password) => {
                     userData.errCode = 0,
                     userData.errMessage = 'check password và user name thành công';
                     delete user.password;
-                    userData;
+                    userData.user = user;
                 }
                 else {
                     userData.errCode = '1',
@@ -25,7 +25,6 @@ let handleUserLogin = (email, password) => {
                 userData.errCode = '500';
                 userData.errMessage = 'không tìm thấy email của bạn';
             }
-            console.log(userData);
             resolve(userData);
         } catch (error) {
             reject(error);
