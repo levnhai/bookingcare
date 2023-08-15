@@ -1,52 +1,74 @@
-const bcrypt = require('bcryptjs');
-const db = require('../models')
+const bcrypt = require("bcryptjs");
+const db = require("../models");
 
 let handleUserLogin = (email, password) => {
-    return new Promise(async (resolve, reject) => {
-        try {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let userData = {};
+      let user = await checkEmail(email);
 
-            let userData = {};
-            let user = await checkEmail(email);
-
-            if(user) {
-                let checkUser = await bcrypt.compare(password, user.password); // true or false
-                if (checkUser) {
-                    userData.errCode = 0,
-                    userData.errMessage = 'check password và user name thành công';
-                    delete user.password;
-                    userData.user = user;
-                }
-                else {
-                    userData.errCode = '1',
-                    userData.errMessage = 'nhập mật khẩu sai rồi bạn tôi ơi';
-                }
-            }
-            else {
-                userData.errCode = '500';
-                userData.errMessage = 'không tìm thấy email của bạn';
-            }
-            resolve(userData);
-        } catch (error) {
-            reject(error);
+      if (user) {
+        let checkUser = await bcrypt.compare(password, user.password); // true or false
+        if (checkUser) {
+          (userData.errCode = 0),
+            (userData.errMessage = "check password và user name thành công");
+          delete user.password;
+          userData.user = user;
+        } else {
+          (userData.errCode = "1"),
+            (userData.errMessage = "nhập mật khẩu sai rồi bạn tôi ơi");
         }
-    })
-}
+      } else {
+        userData.errCode = "500";
+        userData.errMessage = "không tìm thấy email của bạn";
+      }
+      resolve(userData);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 let checkEmail = (emailUser) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let isEmail = await db.User.findOne({
-                where: { email: emailUser},
-                raw: true
-            })
-           resolve(isEmail);
-            
-        } catch (error) {
-            reject(error)
-        }
-    })
-}
+  return new Promise(async (resolve, reject) => {
+    try {
+      let isEmail = await db.User.findOne({
+        where: { email: emailUser },
+        raw: true,
+      });
+      resolve(isEmail);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
-module.exports = ({
-    handleUserLogin,
-})
+let getAllUsers = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = "";
+      if (userId === "all") {
+        user = await db.User.findAll({
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      } else {
+        user = await db.User.findOne({
+          where: { id: userId },
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+      resolve(user);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+module.exports = {
+  handleUserLogin,
+  getAllUsers,
+};

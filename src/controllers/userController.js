@@ -24,6 +24,26 @@ class userController  {
             
         })
      }
+
+     // [GET] getAllUsers
+    async getAllUsers(req, res, next) { 
+        
+        let id = req.body.id; // All and id
+        if (!id) {
+            return res.status(200).json({
+                errcode: 1,
+                errMessage: 'User not found'
+            })
+        }
+        
+        let users = await userService.getAllUsers(id);
+
+        return res.status(200).json({
+            errcode: 0,
+            errMessage: 'thành công',
+            users: users
+        })
+     }
 };
 
 
