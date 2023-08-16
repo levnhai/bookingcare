@@ -1,50 +1,67 @@
-const db = require('../models/index'); 
-const userService = require('../services/userService')
+const db = require("../models/index");
+const userService = require("../services/userService");
 
-class userController  {
+class userController {
+  //[POST] handleLogin
+  async handleLogin(req, res) {
+    let email = req.body.email;
+    let password = req.body.password;
+    if (!email || !password) {
+      return res.status(500).json({
+        errCode: 1,
+        message: "bạn ch nhập email hoặc password",
+      });
+    }
 
-    //[POST] handleLogin
-    async handleLogin(req, res) {
+    let userData = await userService.handleUserLogin(email, password);
 
-        let email = req.body.email;
-        let password = req.body.password;
-        if (!email || !password) {
-            return res.status(500).json({
-                errCode: 1,
-                message: 'bạn ch nhập email hoặc password'
-            })
-        }
+    return res.status(200).json({
+      errcode: userData.errCode,
+      message: userData.errMessage,
+      user: userData.user ? userData.user : {},
+    });
+  }
 
-        let userData = await userService.handleUserLogin(email, password);
+  // [GET] getAllUsers
+  async getAllUsers(req, res, next) {
+    let id = req.query.id; // All and id
+    if (!id) {
+      return res.status(200).json({
+        errcode: 1,
+        errMessage: "User not found",
+      });
+    }
 
-        return res.status(200).json({
-            errcode: userData.errCode,
-            message: userData.errMessage,
-            user: userData.user ? userData.user : {}
-            
-        })
-     }
+    let users = await userService.getAllUsers(id);
 
-     // [GET] getAllUsers
-    async getAllUsers(req, res, next) { 
-        
-        let id = req.body.id; // All and id
-        if (!id) {
-            return res.status(200).json({
-                errcode: 1,
-                errMessage: 'User not found'
-            })
-        }
-        
-        let users = await userService.getAllUsers(id);
+    return res.status(200).json({
+      errcode: 0,
+      errMessage: "thành công",
+      users: users,
+    });
+  }
 
-        return res.status(200).json({
-            errcode: 0,
-            errMessage: 'thành công',
-            users: users
-        })
-     }
-};
+  async handleNewUser(req, res, next) {
+    let user = await userService.createNewUser(req.body);
+    return res.status(200).json({
+      user,
+    });
+  }
 
+  async handleDeleteUser(req, res, next) {
+    let user = await userService.deleteUser(req.body.id);
+    return res.status(200).json({
+      user,
+    });
+  }
 
-module.exports = new userController();      
+  async handleEditUser(req, res, next) {
+    let user = await userService.editUser(req.body);
+    console.log(user);
+    return res.status(200).json({
+      user,
+    });
+  }
+}
+
+module.exports = new userController();
